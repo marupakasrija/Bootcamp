@@ -1,0 +1,1 @@
+![Design Document Mind Map](images/design_doc_mindmap.png)

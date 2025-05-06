@@ -1,0 +1,1 @@
+![Web Application Architecture](images/web_app_architecture.svg)
