@@ -27,4 +27,4 @@ https://asciinema.org/a/4aoZl11QJ0xpgrsjCRg1AWOQD
 
 🔗 Package Page
 View on TestPyPI
-http://test.pypi.org/project/srija-hello/
+https://test.pypi.org/simple/ srija-hello==0.1.0
