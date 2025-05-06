@@ -1,0 +1,2 @@
+[console_scripts]
+srija-hello = srija_hello.hello:main

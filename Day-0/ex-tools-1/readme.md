@@ -64,7 +64,4 @@ sudo systemctl status nginx
 
 
 ## 📸 Screenshots
-*Add screenshots of your Azure portal, VM dashboard, terminal, and deployed website here.*
-![Editing bootcamp_ex-tools-1_readme md at master · marupakasrija_bootcamp - Google Chrome 03-05-2025 22_14_39](https://github.com/user-attachments/assets/d3d7c670-8ace-4ddc-adea-29c65ae80a74)
-
-![Welcome - M Srija Reddy - Google Chrome 03-05-2025 20_50_45](https://github.com/user-attachments/assets/bc85df22-9b2b-4748-bb78-38c66d95b121)
+Attached

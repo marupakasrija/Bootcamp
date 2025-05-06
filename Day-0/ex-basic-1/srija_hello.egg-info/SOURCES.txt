@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+srija_hello/__init__.py
+srija_hello/__main__.py
+srija_hello.egg-info/PKG-INFO
+srija_hello.egg-info/SOURCES.txt
+srija_hello.egg-info/dependency_links.txt
+srija_hello.egg-info/entry_points.txt
+srija_hello.egg-info/top_level.txt
