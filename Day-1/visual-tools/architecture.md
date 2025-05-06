@@ -1,1 +1,1 @@
-![Web Application Architecture](images/web_app_architecture.svg)
+![Web Application Architecture](images/web_app_architecture.drawio.svg)
