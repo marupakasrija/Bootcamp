@@ -1,0 +1,50 @@
+site_name: ChoiceMate Documentation
+site_description: Documentation for the AI Shopping Assistant project
+site_author: Your Name/Team Name
+
+nav:
+  - Home: index.md
+  - Design: design.md
+  - Architecture: architecture.md
+  # Add other pages here as needed, e.g.:
+  # - Installation: installation.md
+  # - Usage: usage.md
+  # - Testing: testing.md
+  # - Future Enhancements: future_enhancements.md
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - search.highlight
+    - search.share
+    - search.suggest
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - def_list
+  - footnotes
+  - abbr
+  - insert
+  - smarty
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mermaid2 # This plugin helps render Mermaid diagrams

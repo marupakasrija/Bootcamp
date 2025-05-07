@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant Backend
+    participant GeminiAPI
+    participant EcommerceSites
+    participant MLModel
+    participant Database
+
+    User->>Frontend: Types product query in chat
+    Frontend->>Backend: Sends user message (API call)
+    Backend->>GeminiAPI: Sends user query for processing
+    GeminiAPI-->>Backend: Returns structured preferences (e.g., category, budget)
+    Backend->>EcommerceSites: Initiates web scraping for relevant products
+    EcommerceSites-->>Backend: Returns raw product data
+    Backend->>Backend: Cleans and structures scraped data (using Pandas)
+    Backend->>MLModel: Sends structured data and user preferences for recommendation
+    MLModel-->>Backend: Returns ranked list of product IDs/details
+    Backend->>Database: Logs chat history and user preferences
+    Backend-->>Frontend: Sends recommended product list
+    Frontend->>User: Displays recommended products with links
+    User->>Frontend: Clicks on product link
+    Frontend->>EcommerceSites: Redirects user to external product page
