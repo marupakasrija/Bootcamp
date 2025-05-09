@@ -1,0 +1,2 @@
+typer[all]
+python-dotenv
