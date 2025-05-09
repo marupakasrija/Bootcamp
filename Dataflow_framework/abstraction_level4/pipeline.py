@@ -1,15 +1,10 @@
-# This is abstraction-level-4/pipeline.py
-# Handles loading the pipeline configuration from YAML and dynamically importing processors.
-
 import yaml
 import importlib
-import sys # Needed for sys.stderr
+import sys
 from typing import List, Dict, Any, Optional
 
-# Import types using relative imports within the package
 from .types import StreamProcessorFn, PipelineStepConfig, ProcessorConfig, StreamProcessor
 
-# Import the helper function from core.py using a relative import
 from .core import get_stream_processor
 
 def load_processor_definition(dotted_path: str):
@@ -38,12 +33,11 @@ def load_processor_definition(dotted_path: str):
     name = None
 
     try:
-        # Split the path into module name and definition name (function or class name).
         module_name, name = dotted_path.rsplit('.', 1)
 
         # --- DEBUG PRINT ---
-        # print(f"DEBUG: load_processor_definition received dotted_path='{dotted_path}'", file=sys.stderr) # Optional debug
-        # print(f"DEBUG: Split into module_name='{module_name}' and name='{name}'", file=sys.stderr) # Optional debug
+        # print(f"DEBUG: load_processor_definition received dotted_path='{dotted_path}'", file=sys.stderr)
+        # print(f"DEBUG: Split into module_name='{module_name}' and name='{name}'", file=sys.stderr) 
         # --- END DEBUG PRINT ---
 
         # --- Attempt 1: Dynamic import relative to the current package ---
@@ -60,7 +54,7 @@ def load_processor_definition(dotted_path: str):
 
             except ImportError as e:
                 # If relative import fails, store the error and try absolute import
-                # print(f"DEBUG: Attempt 1 (relative import) failed: {e}", file=sys.stderr) # Keep this debug if needed
+                # print(f"DEBUG: Attempt 1 (relative import) failed: {e}", file=sys.stderr) 
                 module = None # Reset module to ensure we try the next step
 
 
@@ -79,24 +73,23 @@ def load_processor_definition(dotted_path: str):
                  # --- END DEBUG PRINT ---
              except ImportError as e:
                  # If absolute import also fails, re-raise with a more informative message
-                 # print(f"DEBUG: Attempt 2 (absolute import) failed: {e}", file=sys.stderr) # Keep this debug if needed
+                 # print(f"DEBUG: Attempt 2 (absolute import) failed: {e}", file=sys.stderr) 
                  raise ImportError(f"Could not import module '{module_name}' relative to '{__package__}' or using absolute path '{full_module_path}' for path '{dotted_path}'") from e
         elif module is None: # If not running in a package context (__package__ is None)
              # This case shouldn't happen with python -m, but handle defensively
              try:
                  # --- DEBUG PRINT ---
-                 # print(f"DEBUG: Attempting absolute import for module '{module_name}' (not in package context)", file=sys.stderr) # Keep this debug if needed
+                 # print(f"DEBUG: Attempting absolute import for module '{module_name}' (not in package context)", file=sys.stderr) 
                  # --- END DEBUG PRINT ---
                  module = importlib.import_module(module_name)
                  # --- DEBUG PRINT ---
-                 # print(f"DEBUG: Successfully imported module: {module.__name__}", file=sys.stderr) # Keep this debug if needed
+                 # print(f"DEBUG: Successfully imported module: {module.__name__}", file=sys.stderr) 
                  # --- END DEBUG PRINT ---
              except ImportError as e:
-                 # print(f"DEBUG: Absolute import failed: {e}", file=sys.stderr) # Keep this debug if needed
+                 # print(f"DEBUG: Absolute import failed: {e}", file=sys.stderr) 
                  raise ImportError(f"Could not import module '{module_name}' for path '{dotted_path}'") from e
 
 
-        # --- If module was successfully imported by either attempt ---
         if module:
             # --- DEBUG PRINT ---
             # print(f"DEBUG: Attempting to get attribute '{name}' from module '{module.__name__}'", file=sys.stderr) # Optional debug
@@ -105,7 +98,7 @@ def load_processor_definition(dotted_path: str):
             # Get the function or class object from the module.
             definition = getattr(module, name)
 
-            # print(f"DEBUG: Successfully loaded definition: {dotted_path}", file=sys.stderr) # Optional debug
+            # print(f"DEBUG: Successfully loaded definition: {dotted_path}", file=sys.stderr) 
             return definition
         else:
              # This else should theoretically not be reached if importlib raises ImportError,

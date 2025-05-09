@@ -1,9 +1,5 @@
-# This is abstraction-level-4/core.py
-# Contains core logic for applying stream processors and helper functions.
-
-import sys # Needed for sys.stderr
+import sys 
 from typing import Iterator, List, Optional, Any, Dict
-# Import types using relative imports within the package
 from .types import ProcessorFn, StreamProcessorFn, StreamProcessor, ProcessorConfig, PipelineStepConfig
 
 # --- Wrapper for old str -> str processors ---
@@ -12,15 +8,13 @@ def line_processor_to_stream_processor(processor_fn: ProcessorFn) -> StreamProce
     Wraps a line-by-line processor (str -> str) to work on a stream (Iterator[str] -> Iterator[str]).
     """
     def stream_wrapper(lines: Iterator[str]) -> Iterator[str]:
-        # print(f"DEBUG: Applying wrapped line processor: {getattr(processor_fn, '__name__', 'anonymous')}", file=sys.stderr) # Optional debug
+        # print(f"DEBUG: Applying wrapped line processor: {getattr(processor_fn, '__name__', 'anonymous')}", file=sys.stderr)
         for line in lines:
             try:
-                # Apply the original line processor function to each line
                 yield processor_fn(line)
             except Exception as e:
-                # Basic error handling: print error and yield the original line
                 print(f"Error processing line '{line}' with wrapped processor {getattr(processor_fn, '__name__', 'anonymous')}: {e}", file=sys.stderr)
-                yield line # Yield the original line on error
+                yield line 
     return stream_wrapper
 
 # --- Helper to instantiate processor classes ---
@@ -33,11 +27,11 @@ def instantiate_processor(processor_class, config: Optional[ProcessorConfig] = N
 
         # Instantiate the class, passing the config
         instance = processor_class(config=config)
-        # print(f"DEBUG: Instantiated processor class: {processor_class.__name__}", file=sys.stderr) # Optional debug
+        # print(f"DEBUG: Instantiated processor class: {processor_class.__name__}", file=sys.stderr) 
         return instance
     except Exception as e:
         print(f"Error instantiating processor class {getattr(processor_class, '__name__', 'anonymous')}: {e}", file=sys.stderr)
-        raise # Re-raise the exception
+        raise 
 
 
 # --- Helper to get a StreamProcessorFn from various types ---

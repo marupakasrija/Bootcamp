@@ -1,25 +1,10 @@
-# This is abstraction-level-4/pipeline.yaml
-# Defines the streaming processing pipeline for Level 4.
 
-# The 'pipeline' key contains a list of processing steps.
-# Each step is a dictionary specifying the 'type' which is the
-# dotted import path to the processor definition (StreamProcessor class or function).
-# Any other keys in the step dictionary are passed as 'config' to the processor's __init__.
 pipeline:
-  # Use a stateful class-based processor with configuration
+  
   - type: processors.stateful.LineCounterProcessor
-    prefix: "Item #" # Configuration passed to the constructor
+    prefix: "Item #"
 
-  # Use a simple str->str processor (will be automatically wrapped by core.get_stream_processor)
   - type: processors.upper.to_uppercase
-
-  # Use another simple str->str processor
   - type: processors.snake.to_snakecase
 
-  # Example of using the splitter processor (uncomment to use)
-  # - type: processors.stateful.LineSplitterProcessor
-  #   delimiter: ";" # Split lines by semicolon
-
-  # Example of using a function-based stream processor (uncomment to use)
-  # - type: processors.stateful.add_prefix_stream
 
