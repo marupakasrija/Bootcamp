@@ -6,8 +6,10 @@ Simple Python script for line-by-line processing.
 
 ## Structure
 
+```bash
 abstraction-level-0/
 └── process.py
+```
 
 No external dependencies (built-ins only).
 
