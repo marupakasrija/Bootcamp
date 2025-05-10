@@ -23,12 +23,14 @@ No external dependencies (built-ins only).
 
 ## Run Example
 
-```markdown
+```bash
 echo "  Hello World  " | python abstraction-level-0/process.py
 echo " Another Line " | python abstraction-level-0/process.py
+```
 
 ## Output
 
-```markdown
+```bash
 HELLO WORLD
 ANOTHER LINE
+```
