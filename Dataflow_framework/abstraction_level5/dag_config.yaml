@@ -1,0 +1,76 @@
+# This is abstraction-level-5/dag_config.yaml
+# Defines the DAG processing graph for Level 5.
+
+# 'nodes' defines the processors available in the DAG.
+# Each node must have a unique 'name' (used for routing) and a 'type'
+# (dotted import path to the TaggedStreamProcessor class or function).
+# Other keys are passed as 'config' to the processor's constructor.
+nodes:
+  # Entry point: Takes raw lines, tags them 'start'
+  - name: start
+    type: processors.taggers.StartTagger
+    # config:
+    #   start_tag: initial_lines # Optional: override default start tag
+
+  # Tags lines based on content (ERROR, WARN, or default)
+  - name: content_router
+    type: processors.taggers.ContentTagger
+    config:
+      default_tag: general
+      rules:
+        - tag: is_error
+          contains: "ERROR"
+        - tag: is_warn
+          contains: "WARN"
+
+  # Processes lines tagged 'is_error' (e.g., logs them)
+  - name: error_handler
+    type: processors.taggers.ErrorOnlyProcessor # Example, could be a custom logger processor
+    output_tag: error_processed # This processor yields with this tag
+
+  # Processes lines tagged 'is_warn' (e.g., counts them, then formats)
+  - name: warn_formatter
+    type: processors.upper.UppercaseProcessor # Example: Convert warnings to uppercase
+    output_tag: warn_formatted # This processor yields with this tag
+
+  # Processes lines tagged 'general' or 'warn_formatted' (fan-in)
+  - name: final_formatter
+    type: processors.snake.SnakecaseProcessor # Example: Convert general/formatted warnings to snakecase
+    output_tag: ready_for_output # This processor yields with this tag
+
+  # Collects lines tagged 'error_processed' or 'ready_for_output' (fan-in)
+  # This is the node that yields lines with the special 'final_output' tag
+  - name: output_collector
+    type: processors.taggers.OutputCollector
+
+# 'edges' defines the routing rules based on the tags emitted by nodes.
+# Format: {from_node_name: {emitted_tag: to_node_name or 'final_output'}}
+edges:
+  # Lines from the 'start' node tagged 'start' go to 'content_router'
+  start:
+    start: content_router
+
+  # Lines from 'content_router' are routed based on its emitted tag
+  content_router:
+    is_error: error_handler    # Lines tagged 'is_error' go to 'error_handler'
+    is_warn: warn_formatter    # Lines tagged 'is_warn' go to 'warn_formatter'
+    general: final_formatter   # Lines tagged 'general' go to 'final_formatter'
+
+  # Lines from 'error_handler' tagged 'error_processed' go to 'output_collector'
+  error_handler:
+    error_processed: output_collector
+
+  # Lines from 'warn_formatter' tagged 'warn_formatted' go to 'final_formatter' (Fan-in to final_formatter)
+  warn_formatter:
+    warn_formatted: final_formatter
+
+  # Lines from 'final_formatter' tagged 'ready_for_output' go to 'output_collector'
+  final_formatter:
+    ready_for_output: output_collector
+
+  # Lines from 'output_collector' tagged 'final_output' are collected by the engine
+  # This doesn't need an entry here, as the engine recognizes the special tag.
+  # If you had a dedicated final sink node, you would route to it here.
+  # output_collector:
+  #   final_output: <special_engine_collection> # Conceptual
+

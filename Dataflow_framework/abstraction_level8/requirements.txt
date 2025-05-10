@@ -1,0 +1,7 @@
+typer[all]
+python-dotenv
+PyYAML
+networkx # For graph representation/validation/cycle detection
+fastapi # For the web dashboard
+uvicorn # ASGI server to run FastAPI
+pydantic # For data validation and serialization in FastAPI
