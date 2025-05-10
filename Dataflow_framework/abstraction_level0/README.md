@@ -1,4 +1,4 @@
-# 🔢 Level 0 – Basic Script (No Abstraction)
+# Level 0 – Basic Script (No Abstraction)
 
 Simple Python script for line-by-line processing.
 
