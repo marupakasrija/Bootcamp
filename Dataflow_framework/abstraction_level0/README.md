@@ -21,7 +21,6 @@ No external dependencies (built-ins only).
 
 - Python 3 installed (`python --version` to check)
 
----
 
 ## Run Example
 

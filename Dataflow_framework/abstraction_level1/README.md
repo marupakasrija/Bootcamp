@@ -5,7 +5,6 @@ This project introduces:
 - Basic processing functions
 - Configurable behavior using a `.env` file
 
----
 
 ## 🏗 Structure
 
@@ -16,7 +15,6 @@ abstraction-level-1/
 └── requirements.txt
 ```
 
----
 
 ## 🛠 Setup
 
@@ -28,7 +26,6 @@ abstraction-level-1/
 pip install -r requirements.txt
 ```
 
----
 
  **.env Configuration**
 
@@ -40,7 +37,6 @@ Available modes:
 
 - snakecase → Converts lines to snake_case
 
----
 
 ## Input File 
 
@@ -50,7 +46,6 @@ Another Line
   TEST this
 ```
 
----
 
 ## Run and Save Output to File
 

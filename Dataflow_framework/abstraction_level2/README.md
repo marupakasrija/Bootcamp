@@ -2,7 +2,6 @@
 
 This project refactors the code into a modular structure and introduces a standardized processor signature for better scalability and maintainability.
 
----
 
 ## 🏗 Structure
 
@@ -16,7 +15,6 @@ abstraction-level-2/
 └── requirements.txt
 ```
 
----
 
 ## 🛠 Setup
 
@@ -28,7 +26,6 @@ abstraction-level-2/
 pip install -r requirements.txt
 ```
 
----
 
  **.env Configuration**
 
@@ -40,7 +37,6 @@ Available modes:
 
 - snakecase → Converts lines to snake_case
 
----
 
 ## Input File 
 
@@ -50,7 +46,6 @@ Another Line
   TEST this
 ```
 
----
 
 ## Run and Save Output to File
 

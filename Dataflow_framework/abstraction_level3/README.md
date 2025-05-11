@@ -2,11 +2,7 @@
 
 ## Task Description
 
-- Create a pipeline.yaml file that defines the processing steps using import paths:
-
-- pipeline:
-    - type: processors.snake.to_snakecase
-    - type: processors.upper.to_uppercase
+- Create a pipeline.yaml file that defines the processing steps using import paths
 
 - Write a function that:
   - Parses the config file
@@ -23,12 +19,12 @@ abstraction-level-3/
 ├── main.py
 ├── cli.py
 ├── core.py
-├── pipeline.py         
+├── pipeline.py         # Loads pipeline from YAML 
 ├── types.py
-├── processors/
+├── processors/         # New directory for processor modules
 │   ├── upper.py
 │   └── snake.py
-└── pipeline.yaml
+└── pipeline.yaml       # New config file
 ```
 
 ## 📦 Dependencies

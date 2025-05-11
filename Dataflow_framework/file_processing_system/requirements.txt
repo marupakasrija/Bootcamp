@@ -1,5 +1,0 @@
-fastapi==0.110.0
-uvicorn[standard]==0.28.0
-watchdog==4.0.1
-python-multipart==0.0.9 # Needed for file uploads via FastAPI
-# Add any other libraries your specific processing steps require
