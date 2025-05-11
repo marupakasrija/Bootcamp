@@ -1,0 +1,5 @@
+This is a standard log message.
+ERROR: Disk full. Cannot write data.
+Another routine message.
+Processing record 123 failed. ERROR code 500.
+System running normally.

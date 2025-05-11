@@ -1,0 +1,5 @@
+Starting application.
+UserLoggedIn
+Processing data.
+AnotherCamelCaseLineHere
+Application shutdown complete.
