@@ -100,7 +100,7 @@ Access these endpoints via your web browser or tools like `curl` after running `
 The console output will show logging messages from the routing engine's processing loop, including lines reaching the `FINAL OUTPUT` state.
 Accessing the dashboard endpoints in your browser or via API calls will provide the live metrics, traces, and error information as JSON responses.
 
-``bash
+```bash
 PS D:\Bootcamp\Dataflow_framework\abstraction_level7> python main.py
 2025-05-11 20:39:35,570 - INFO - Loading configuration from config/config.yaml
 2025-05-11 20:39:35,572 - INFO - Configuration loaded successfully.
