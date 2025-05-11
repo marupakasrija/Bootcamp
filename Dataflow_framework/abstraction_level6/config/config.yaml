@@ -1,0 +1,28 @@
+# config/config.yaml
+
+# Configuration for the state-based routing engine.
+# Maps state tags to the Python class that processes lines for that state.
+
+nodes:
+  # The 'start' tag is the entry point. Lines initially enter the system tagged 'start'.
+  - tag: start
+    # The type specifies the Python class to use.
+    # Format: <module_name>.<class_name> within the 'processors' package.
+    type: processors.start.TagLinesProcessor
+
+  # Lines tagged 'error' go to the OnlyErrorProcessor.
+  - tag: error
+    type: processors.filters.OnlyErrorProcessor
+
+  # Lines tagged 'warn' go to the OnlyWarnProcessor.
+  - tag: warn
+    type: processors.filters.OnlyWarnProcessor
+
+  # Lines tagged 'general' go to the SnakecaseProcessor.
+  - tag: general
+    type: processors.formatters.SnakecaseProcessor
+
+  # The 'end' tag is the exit point. Lines tagged 'end' are processed by the TerminalOutputProcessor
+  # and then removed from the routing queue.
+  - tag: end
+    type: processors.output.TerminalOutputProcessor
