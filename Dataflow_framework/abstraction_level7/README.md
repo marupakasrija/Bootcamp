@@ -92,8 +92,8 @@ Access these endpoints via your web browser or tools like `curl` after running `
     * Example: `http://127.0.0.1:8000/traces`
 * **`/errors`**: Returns a JSON list of recent errors logged by the engine or processors. Each entry includes the processor/source, the error message, and the line being processed when the error occurred.
     * Example: `http://127.0.0.1:8000/errors`
-
-![Alt text for the image](\screenshots\Routing Engine Dashboard - Swagger UI - Google Chrome 11-05-2025 20_22_57.png "Output image")
+    
+![Alt text for the image](screenshots/Routing Engine Dashboard - Swagger UI - Google Chrome 11-05-2025 20_22_57.png "Output image")
 
 ## Output
 
