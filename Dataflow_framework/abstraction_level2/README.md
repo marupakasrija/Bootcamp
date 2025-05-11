@@ -57,6 +57,9 @@ Another Line
 ```bash
 python process.py --input input.txt --mode snakecase --output out.txt
 ```
+```bash
+python process.py --input input.txt --mode uppercase --output out.txt
+```
 
 ## Output 
 - (Uppercase Mode)

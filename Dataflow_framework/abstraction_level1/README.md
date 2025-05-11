@@ -55,6 +55,9 @@ Another Line
 ## Run and Save Output to File
 
 ```bash
+python process.py --input input.txt --mode uppercase --output out.txt
+```
+```bash
 python process.py --input input.txt --mode snakecase --output out.txt
 ```
 
