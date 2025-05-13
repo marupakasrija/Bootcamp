@@ -1,0 +1,44 @@
+1. What are transactions?
+A transaction is a single unit of work. It's a sequence of operations performed as a single logical unit. Either all operations within a transaction succeed and are committed to the database, or if any part fails, all operations are rolled back, leaving the database in its original state before the transaction began. This ensures data integrity.
+
+2. What are ACID Properties?
+ACID is an acronym representing key properties of database transactions:
+. Atomicity: Ensures that a transaction is treated as a single, indivisible unit. Either all of its operations are completed successfully, or none are.
+. Consistency: Ensures that a transaction brings the database from one valid state to another. It guarantees that rules and constraints (like foreign keys, unique constraints) are maintained.
+. Isolation: Ensures that concurrent transactions do not interfere with each other. Each transaction appears to run as if it were the only transaction happening on the database. Different isolation levels exist (Read Uncommitted, Read Committed, Repeatable Read, Serializable) to balance performance and data consistency.
+. Durability: Ensures that once a transaction has been committed, its changes are permanent and will survive system failures (like power outages, crashes). Committed data is typically written to durable storage like a hard drive.
+3. Suppose you do not have transactions. Is that system useful? Why?
+A system without transactions can still be useful for very simple scenarios or read-heavy workloads where data consistency across multiple operations is not critical. For example:
+. Logging application events (appending new logs).
+. Caching simple key-value pairs.
+. Storing static configuration data.
+. Applications where eventual consistency is acceptable.
+However, for any system where related pieces of data must be kept in sync (like financial transfers, inventory management, placing an order that involves multiple database updates), a system without transactions is not reliable or safe. Without atomicity, an error in the middle of a multi-step operation could leave the database in an inconsistent state (e.g., money debited from one account but not credited to another). Without isolation, concurrent operations could overwrite each other's changes or read partial/incorrect data.
+
+4. What properties your file system has?
+File systems typically provide some level of durability (data written to disk usually persists). They offer atomicity for some basic operations (like renaming a file - it's usually atomic). However, they generally lack the strong consistency and isolation guarantees of a database transaction. Writing to multiple files or updating parts of a large file concurrently can lead to race conditions and inconsistent states if not managed carefully by the application itself. File systems are designed for managing files and directories efficiently, not for complex, concurrent, and consistent data manipulation across multiple data points.
+
+5. Suppose you do not have "A" in ACID? What happens? When is it ok? Give me a scenario where it is ok.
+. Without Atomicity, a multi-step operation can fail partway through, leaving the system in a partially completed, inconsistent state.
+  . What happens: If a transfer involves debiting account A and crediting account B, and the debit succeeds but the credit fails (e.g., due to a network error or crash), the money is lost from account A but never appears in account B. The database is inconsistent.
+  . When is it ok: Scenarios where partial failures don't cause significant harm or can be easily detected and cleaned up by external processes.
+  .Scenario where it is ok: Logging system that appends entries to multiple log files. If writing to one log file fails, it's undesirable but not catastrophic if the application can continue writing to others, and there are separate monitoring or aggregation processes that can identify missing logs. The loss of a single log entry might be acceptable for non-critical logs.
+Do the same for C, I, and D.
+
+6. Without Consistency (C):
+
+. What happens: Transactions might complete, but they could violate database rules or invariants. For example, allowing a withdrawal that makes a balance negative when a constraint requires it to be non-negative. The database reaches an invalid state.
+. When is it ok: Highly flexible or schema-less data stores where data structure and rules are enforced by the application, not the database. Rapid prototyping or systems where data quality is not paramount.
+. Scenario where it is ok: A simple data collection system storing user preferences, where malformed data for one user doesn't impact others, and the application filters or cleans data on read.
+
+7. Without Isolation (I):
+
+. What happens: Concurrent transactions can interfere. Phenomena like "dirty reads" (reading uncommitted data), "non-repeatable reads" (reading the same data twice and getting different values because another transaction committed in between), and "phantom reads" (seeing new rows appear or disappear in a range query) can occur. This leads to incorrect results for applications.
+. When is it ok: Read-only systems, or systems with very low concurrency where the chance of interference is negligible. Batch processing systems where transactions run sequentially.
+. Scenario where it is ok: A system generating static reports from a database that is only written to during off-peak hours. During report generation (reading), there are no concurrent writes, so isolation is not strictly needed.
+
+8. Without Durability (D):
+
+. What happens: Data changes committed by a transaction might be lost in case of a system failure (like a power loss or crash) before being written to permanent storage.
+. When is it ok: Systems where data is ephemeral or can be easily regenerated. Caching layers. In-memory databases used for temporary processing.
+. Scenario where it is ok: An in-memory cache storing results of expensive computations. If the system crashes, the cache is lost, but it can be repopulated by re-running the computations. The primary data source is stored elsewhere with durability.

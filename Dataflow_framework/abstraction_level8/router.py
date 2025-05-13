@@ -278,7 +278,6 @@ class RoutingEngine:
                     # Pass the line to the processor. Wrap the single item in an iterator.
                     # The processor yields (next_tag, processed_line, updated_trace, file_path) tuples.
                     processor_output_iterator = processor.process(iter([(current_tag, line_to_process, trace, file_path)]))
-
                     # --- Validation check ---
                     if processor_output_iterator is None:
                         logging.warning(f"Processor for '{current_tag}' returned None instead of an iterator for line '{line_to_process}' from file '{file_path}'. Discarding output. Trace: {trace}")
