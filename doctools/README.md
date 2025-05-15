@@ -1,39 +1,45 @@
-# Day 1 - Markdown & Developer Documentation Basics
+# Developer Documentation: Tools & Best Practices
 
-Welcome to Day 0 of the Bootcamp! This folder contains foundational tasks that build strong documentation habits and introduce essential developer tools. The focus is on learning Markdown syntax, creating personal logs, and understanding how documentation improves collaboration and clarity in development.
+## Purpose
+
+This training equips developers with the skills to create, maintain, and publish clear, effective documentation that lives alongside code. It improves onboarding, system understanding, and collaboration across teams.
+
+## What You'll Learn
+
+- Writing clear documentation in **Markdown**
+- Visualizing systems using **Mermaid**, **Draw.io**, and **XMind**
+- Structuring and publishing docs with **MkDocs + Material Theme**
+- Embedding documentation into GitHub repositories
+- Writing and organizing design and architecture documents
+
+## Key Tools
+
+- Markdown
+- Mermaid.js
+- Draw.io / diagrams.net
+- XMind
+- MkDocs with Material theme
+- Google Docs (for collaborative drafting)
+
+## Practice Tasks Overview
+
+| Area                     | Task                                                                 | Exit Criteria                                                      |
+|--------------------------|----------------------------------------------------------------------|---------------------------------------------------------------------|
+| Markdown                 | Cheatsheet, README.md, Daily Log                                     | Clear guide and log showing learning over time                     |
+| Visual Docs              | Sequence (Mermaid), Block Diagrams (Draw.io), Mind Maps (XMind)      | Labeled, readable, embedded visuals in Markdown                    |
+| MkDocs                   | Setup, add structure and diagrams                                    | Live preview with working search and navigation                    |
+| Design & Architecture    | One-pager design doc, architecture overview                          | Clear, logical, and peer-understandable design explanation         |
+| GitHub Documentation     | README.md, `docs/` folder, working links                             | Repo can be understood and run by a new developer in 10 minutes    |
+
+## Deliverables (Capstone)
+
+- `README.md`
+- Sequence diagram (Mermaid)
+- Block diagram (Draw.io)
+- Design document (Markdown)
+- Architecture documentation
+- Live documentation site using MkDocs
 
 ---
 
-## 📁 Contents
-
-- [`markdown-cheatsheet.md`](./markdown-cheatsheet.md):  
-  A comprehensive Markdown reference guide that demonstrates headings, links, lists, code blocks, images, and tables.
-
-- [`05-05-2025.md`](./05-05-2025.md):  
-  My Day 1 daily log. It includes "What I learned", "What confused me", and reflections from the session.
-
----
-
-## 🛠️ How to Use
-
-- Use the `markdown-cheatsheet.md` file as a quick reference to improve your README writing and documentation skills.
-- Update your daily log in the same format to keep track of progress and areas for improvement.
-- Keep these files versioned inside the monorepo to reflect growth over time.
-
----
-
-## 📌 Key Takeaways
-
-- Markdown is a lightweight, readable format perfect for developer documentation.
-- Writing clearly and frequently helps solidify understanding and reduce repetitive explanations.
-- Keeping a daily log helps track growth, confusion points, and learning milestones.
-
----
-
-## 🔗 Useful Links
-
-- [Markdown Guide](https://www.markdownguide.org/)
-- [VS Code Markdown Preview](https://code.visualstudio.com/docs/languages/markdown)
-- [Mermaid.js Diagrams](https://mermaid-js.github.io/mermaid/#/)
-
----
+> “Clear writing is clear thinking made visible.”
