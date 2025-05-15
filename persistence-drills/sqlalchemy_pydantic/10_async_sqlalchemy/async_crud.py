@@ -1,0 +1,159 @@
+# sqlalchemy_pydantic/10_async_sqlalchemy/async_crud.py
+
+# --- DIAGNOSTIC ADDITION: Explicitly add parent directory to sys.path ---
+import sys
+import os
+
+# Get the directory of the current script (10_async_sqlalchemy)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Get the parent directory (sqlalchemy_pydantic)
+parent_dir = os.path.dirname(script_dir)
+# Add the parent directory to sys.path. This should be the directory containing shared.py.
+sys.path.insert(0, parent_dir)
+print(f"DEBUG: Added {parent_dir} to sys.path for import.")
+# --- END DIAGNOSTIC ADDITION ---
+
+
+# This exercise demonstrates using SQLAlchemy with an asynchronous database driver (asyncpg)
+# and async sessions.
+
+# --- IMPORTANT ---
+# Before running this, you MUST:
+# 1. Have a PostgreSQL database running.
+# 2. Install asyncpg: pip install asyncpg
+# 3. UPDATE shared.py:
+#    - COMMENT OUT the Synchronous setup (engine, SessionLocal, get_db, create_tables).
+#    - UNCOMMENT and CONFIGURE the Asynchronous setup (async_engine, AsyncSessionLocal, get_async_db, create_async_tables).
+#    - Make sure DATABASE_URL uses the asyncpg driver: "postgresql+asyncpg://..."
+#    - Make sure AsyncSessionLocal uses class_=AsyncSession.
+#    - Update the create_tables function to create_async_tables as provided in shared.py comments.
+#    - Ensure necessary async imports (create_async_engine, AsyncSession) are present in shared.py.
+
+
+import asyncio
+from typing import List, Optional
+# Assuming shared.py has been updated for async:
+# Import AsyncSessionLocal, User, etc. from shared.py
+# Note: If shared.py is conditional, you might need a try/except import or structure differently.
+# Assuming AsyncSessionLocal, User, UserCreate, UserSchema, create_async_tables are defined/imported in shared.py
+# after the async setup is uncommented:
+from shared import AsyncSessionLocal, User, UserCreate, UserSchema
+from shared import create_async_tables # Import the async table creation function
+
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select # Recommended for modern SQLAlchemy queries
+
+async def create_async_user(user_data: UserCreate) -> Optional[UserSchema]:
+    """
+    Creates a new user asynchronously.
+    """
+    # Use 'async with' for async sessions
+    async with AsyncSessionLocal() as db:
+        try:
+            db_user = User(name=user_data.name, email=user_data.email)
+            db.add(db_user)
+            await db.commit() # Use await with commit()
+            await db.refresh(db_user) # Use await with refresh()
+
+            print(f"Inserted async user with ID: {db_user.id}")
+            # Use model_validate in Pydantic v2+, from_orm in V1
+            return UserSchema.model_validate(db_user)
+
+        except IntegrityError as e:
+            await db.rollback() # Use await with rollback()
+            print(f"Async error: User with email '{user_data.email}' already exists. {e}")
+            return None
+        except Exception as e:
+            await db.rollback()
+            print(f"An unexpected async error occurred: {e}")
+            return None
+
+
+async def get_async_users() -> List[UserSchema]:
+    """
+    Fetches all users asynchronously.
+    """
+    async with AsyncSessionLocal() as db:
+        try:
+            # Use select() with await db.execute() for modern SQLAlchemy queries
+            # Use .scalars() to get just the model instances from the result
+            result = await db.execute(select(User))
+            users = result.scalars().all()
+
+            # Convert to Pydantic models (this part is sync)
+            # Use model_validate in Pydantic v2+, from_orm in V1
+            return [UserSchema.model_validate(user) for user in users]
+
+        except Exception as e:
+            print(f"Async error fetching users: {e}")
+            return []
+
+async def get_async_user_by_email(email: str) -> Optional[UserSchema]:
+    """
+    Fetches a single user by email asynchronously.
+    """
+    async with AsyncSessionLocal() as db:
+        try:
+            result = await db.execute(select(User).filter(User.email == email))
+            user = result.scalars().first() # .first() gets the first result or None
+
+            if user:
+                # Use model_validate in Pydantic v2+, from_orm in V1
+                return UserSchema.model_validate(user)
+            else:
+                return None
+
+        except Exception as e:
+            print(f"Async error fetching user by email: {e}")
+            return None
+
+
+async def main():
+    # Ensure tables exist (run once after updating shared.py)
+    # Call the async create_tables function
+    await create_async_tables()
+    print("-" * 20)
+
+    # Create users asynchronously
+    print("\nAttempting to create async user...")
+    user_in_1 = UserCreate(name="Async Alice", email="async.alice@example.com")
+    created_user_1 = await create_async_user(user_in_1)
+    if created_user_1:
+        print(f"Created: {created_user_1.model_dump_json(indent=4)}") # V2
+
+    user_in_2 = UserCreate(name="Async Bob", email="async.bob@example.com")
+    created_user_2 = await create_async_user(user_in_2)
+    if created_user_2:
+        print(f"Created: {created_user_2.model_dump_json(indent=4)}") # V2
+
+    # Attempt duplicate (should fail)
+    user_in_3 = UserCreate(name="Async Alice Again", email="async.alice@example.com")
+    await create_async_user(user_in_3)
+
+    print("-" * 20)
+
+    # Fetch users asynchronously
+    print("\nAttempting to fetch all async users...")
+    all_async_users = await get_async_users()
+    if all_async_users:
+        print("Fetched async users:")
+        for user in all_async_users:
+            print(user.model_dump_json(indent=2)) # V2
+    else:
+        print("No async users found.")
+
+    print("-" * 20)
+
+    # Fetch user by email asynchronously
+    print("\nAttempting to fetch 'async.bob@example.com'...")
+    bob_user = await get_async_user_by_email("async.bob@example.com")
+    if bob_user:
+        print(f"Found async user: {bob_user.model_dump_json(indent=4)}") # V2
+    else:
+        print("Async user 'async.bob@example.com' not found.")
+
+
+# --- Exercise Execution ---
+if __name__ == "__main__":
+    # You need to run async functions using an asyncio event loop
+    asyncio.run(main())
