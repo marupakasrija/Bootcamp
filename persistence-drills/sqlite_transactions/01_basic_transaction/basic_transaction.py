@@ -1,17 +1,13 @@
-# 01_basic_transaction/basic_transaction.py
 import sqlite3
 import os
 
-# Define a database file name for this specific demo
 DATABASE_NAME = "basic_transaction_demo.db"
 
 def create_connection(db_file):
     """ Creates a database connection """
     conn = None
     try:
-        # connect will create the file if it doesn't exist
         conn = sqlite3.connect(db_file)
-        # print(f"Connected to database: {db_file}")
         return conn
     except sqlite3.Error as e:
         print(f"Error connecting to database: {e}")
@@ -29,7 +25,7 @@ def setup_demo_table(conn):
     try:
         cursor = conn.cursor()
         cursor.execute(create_items_table_sql)
-        conn.commit() # Commit the table creation
+        conn.commit() 
         print("Demo table 'items' checked/created.")
     except sqlite3.Error as e:
         print(f"Error setting up demo table: {e}")
@@ -48,7 +44,7 @@ def demonstrate_basic_transaction(conn, cause_error=True):
     items_to_insert_with_error = [
         ("Item D", 50),
         ("Item E", 15),
-        ("Item D", 30), # Duplicate name, will cause IntegrityError
+        ("Item D", 30), 
         ("Item F", 100),
     ]
 
@@ -57,9 +53,6 @@ def demonstrate_basic_transaction(conn, cause_error=True):
 
     print(f"\n--- Demonstrating Basic Transaction ({action}) ---")
     try:
-        # Using 'with conn:' context manager starts a transaction automatically.
-        # If the block finishes without exceptions, conn.commit() is called.
-        # If an exception occurs, conn.rollback() is called.
         with conn:
             print("Transaction started...")
             cursor = conn.cursor()
@@ -68,24 +61,18 @@ def demonstrate_basic_transaction(conn, cause_error=True):
             for name, quantity in data_to_use:
                 print(f"  Executing INSERT for: ({name}, {quantity})")
                 cursor.execute(sql, (name, quantity))
-                # Changes are staged in the transaction
 
             print("Transaction block finished (all execute calls successful).")
-            # If we reach here, conn.commit() happens automatically upon exiting the 'with' block.
 
     except sqlite3.Error as e:
-        # This block is executed if an error occurs during the transaction.
-        # The 'with conn:' context manager has already called rollback.
         print(f"\nCaught an exception during transaction: {e}")
         print("Transaction automatically rolled back by the 'with conn:' context manager.")
 
     except Exception as e:
-        # Catch any other unexpected errors
         print(f"\nCaught an unexpected error during transaction: {e}")
         print("Transaction automatically rolled back by the 'with conn:' context manager.")
 
 
-    # After the transaction attempt (whether committed or rolled back), check the table state
     print("\n--- Checking Table State After Transaction Attempt ---")
     try:
         cursor = conn.cursor()
@@ -106,13 +93,10 @@ def demonstrate_basic_transaction(conn, cause_error=True):
         print(f"Error checking table state: {e}")
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
-    # Determine the path for the database file relative to the script's location
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, DATABASE_NAME)
 
-    # Clean up the database file for a fresh start each time
     if os.path.exists(db_path):
         os.remove(db_path)
         print(f"Removed existing database: {db_path}")
@@ -122,16 +106,7 @@ if __name__ == "__main__":
     if conn:
         setup_demo_table(conn)
 
-        # Demonstrate a transaction that will fail and rollback
         demonstrate_basic_transaction(conn, cause_error=True)
-
-        # Optional: Clean the table and demonstrate a successful transaction
-        # print("\n--- Clearing table for success demo ---")
-        # conn.execute("DELETE FROM items;")
-        # conn.commit()
-        # demonstrate_basic_transaction(conn, cause_error=False)
-
-
         conn.close()
         print(f"\nDatabase connection closed for {DATABASE_NAME}.")
     else:

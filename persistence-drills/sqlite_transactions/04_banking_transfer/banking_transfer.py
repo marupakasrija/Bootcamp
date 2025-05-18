@@ -1,8 +1,6 @@
-# 04_banking_transfer/banking_transfer.py
 import sqlite3
 import os
 
-# Define a database file name for this specific demo
 DATABASE_NAME = "banking_transaction_demo.db"
 
 def create_connection(db_file):
@@ -10,7 +8,6 @@ def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        # print(f"Connected to database: {db_file}")
         return conn
     except sqlite3.Error as e:
         print(f"Error connecting to database: {e}")
@@ -29,7 +26,6 @@ def setup_accounts_table(conn):
         cursor = conn.cursor()
         cursor.execute(create_accounts_table_sql)
 
-        # Clear existing data and populate with sample accounts
         cursor.execute("DELETE FROM accounts;")
         cursor.execute("INSERT INTO accounts (account_id, account_holder, balance) VALUES (?, ?, ?);", (101, "Alice", 1000.00))
         cursor.execute("INSERT INTO accounts (account_id, account_holder, balance) VALUES (?, ?, ?);", (102, "Bob", 500.00))
@@ -48,7 +44,7 @@ def get_account_balance(conn, account_id):
         cursor = conn.cursor()
         cursor.execute(sql, (account_id,))
         result = cursor.fetchone()
-        return result[0] if result else None # Return balance or None if account not found
+        return result[0] if result else None
     except sqlite3.Error as e:
         print(f"Error fetching balance for account {account_id}: {e}")
         return None
@@ -65,7 +61,7 @@ def transfer_funds(conn, from_account_id, to_account_id, amount, cause_error=Fal
         return False
 
     try:
-        with conn: # Start transaction
+        with conn: 
             print("  Transaction started for fund transfer...")
             cursor = conn.cursor()
 
@@ -96,7 +92,6 @@ def transfer_funds(conn, from_account_id, to_account_id, amount, cause_error=Fal
             cursor.execute("SELECT account_id FROM accounts WHERE account_id = ?;", (to_account_id,))
             to_account_row = cursor.fetchone()
             if to_account_row is None:
-                 # This will cause a rollback because it's within the 'with' block
                  raise ValueError(f"Destination account {to_account_id} not found.")
 
 
@@ -106,13 +101,12 @@ def transfer_funds(conn, from_account_id, to_account_id, amount, cause_error=Fal
             cursor.execute(update_credit_sql, (amount, to_account_id))
 
             print("  Transaction block finished successfully.")
-            # If no exception, conn.commit() happens automatically
-            return True # Indicate success
+            return True 
 
-    except (sqlite3.Error, ValueError, RuntimeError) as e: # Catch DB errors and our custom errors
+    except (sqlite3.Error, ValueError, RuntimeError) as e: 
         print(f"  Caught an error during transfer: {e}")
         print("  Transaction automatically rolled back by the 'with conn:' context manager.")
-        return False # Indicate failure
+        return False 
 
     except Exception as e:
          print(f"  Caught an unexpected error during transfer: {e}")
@@ -120,12 +114,10 @@ def transfer_funds(conn, from_account_id, to_account_id, amount, cause_error=Fal
          return False
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, DATABASE_NAME)
 
-    # Clean up the database file for a fresh start
     if os.path.exists(db_path):
         os.remove(db_path)
         print(f"Removed existing database: {db_path}")
@@ -135,33 +127,27 @@ if __name__ == "__main__":
     if conn:
         setup_accounts_table(conn)
 
-        # Display initial balances
         print("\n--- Initial Balances ---")
         print(f"Alice (101): {get_account_balance(conn, 101):.2f}")
         print(f"Bob (102): {get_account_balance(conn, 102):.2f}")
         print(f"Charlie (103): {get_account_balance(conn, 103):.2f}")
 
 
-        # --- Demonstrate Failed Transfer (due to simulated error) ---
         transfer_funds(conn, 101, 102, 300.00, cause_error=True)
 
-        # Display balances after failed transfer attempt (should be unchanged)
         print("\n--- Balances After Failed Transfer Attempt ---")
         print(f"Alice (101): {get_account_balance(conn, 101):.2f}")
         print(f"Bob (102): {get_account_balance(conn, 102):.2f}")
         print(f"Charlie (103): {get_account_balance(conn, 103):.2f}")
 
 
-        # --- Demonstrate Successful Transfer ---
         transfer_funds(conn, 101, 102, 200.00, cause_error=False)
 
-        # Display balances after successful transfer
         print("\n--- Balances After Successful Transfer ---")
         print(f"Alice (101): {get_account_balance(conn, 101):.2f}")
         print(f"Bob (102): {get_account_balance(conn, 102):.2f}")
         print(f"Charlie (103): {get_account_balance(conn, 103):.2f}")
 
-        # Demonstrate another failed transfer (insufficient funds)
         transfer_funds(conn, 101, 103, 900.00, cause_error=False) # Alice only has 800 left
 
         print("\n--- Balances After Insufficient Funds Attempt ---")

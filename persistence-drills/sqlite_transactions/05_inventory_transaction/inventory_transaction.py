@@ -1,9 +1,7 @@
-# 05_inventory_transaction/inventory_transaction.py
 import sqlite3
 import os
 import time
 
-# Define a database file name for this specific demo
 DATABASE_NAME = "inventory_transaction_demo.db"
 
 def create_connection(db_file):
@@ -11,9 +9,7 @@ def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        # Enable foreign key constraint enforcement (if applicable, less critical here)
         conn.execute("PRAGMA foreign_keys = ON;")
-        # print(f"Connected to database: {db_file}")
         return conn
     except sqlite3.Error as e:
         print(f"Error connecting to database: {e}")
@@ -44,7 +40,6 @@ def setup_tables(conn):
         cursor.execute(create_products_table_sql)
         cursor.execute(create_inventory_log_table_sql)
 
-        # Clear existing data and populate with sample products
         cursor.execute("DELETE FROM products;")
         cursor.execute("DELETE FROM inventory_log;")
         cursor.execute("INSERT INTO products (name, stock_quantity) VALUES (?, ?);", ("Widget", 50))
@@ -64,7 +59,7 @@ def get_product_stock(conn, product_name):
         cursor = conn.cursor()
         cursor.execute(sql, (product_name,))
         result = cursor.fetchone()
-        return result[0] if result else None # Return quantity or None if product not found
+        return result[0] if result else None 
     except sqlite3.Error as e:
         print(f"Error fetching stock for product '{product_name}': {e}")
         return None
@@ -80,7 +75,7 @@ def process_sale(conn, product_name, quantity_sold, cause_log_error=False):
         return False
 
     try:
-        with conn: # Start transaction
+        with conn: 
             print("  Transaction started for sale processing...")
             cursor = conn.cursor()
 
@@ -109,11 +104,8 @@ def process_sale(conn, product_name, quantity_sold, cause_log_error=False):
 
             print(f"  Logging sale for '{product_name}' (Change: {log_quantity_change})...")
 
-            # Simulate an error during logging if requested
             if cause_log_error:
                  print("  Simulating a logging error...")
-                 # Attempt to insert invalid data, e.g., text into an INTEGER column if the table structure allowed,
-                 # or just raise a Python error. Let's raise a Python error.
                  raise RuntimeError("Simulated logging system failure!")
 
             insert_log_sql = "INSERT INTO inventory_log (product_id, change_quantity, log_time, notes) VALUES (?, ?, ?, ?);"
@@ -123,13 +115,12 @@ def process_sale(conn, product_name, quantity_sold, cause_log_error=False):
 
 
             print("  Transaction block finished successfully.")
-            # If no exception, conn.commit() happens automatically
-            return True # Indicate success
+            return True 
 
-    except (sqlite3.Error, ValueError, RuntimeError) as e: # Catch DB errors and our custom errors
+    except (sqlite3.Error, ValueError, RuntimeError) as e: 
         print(f"  Caught an error during sale processing: {e}")
         print("  Transaction automatically rolled back by the 'with conn:' context manager.")
-        return False # Indicate failure
+        return False 
 
     except Exception as e:
          print(f"  Caught an unexpected error during sale processing: {e}")
@@ -150,12 +141,10 @@ def check_table_counts(conn):
         print(f"Error checking counts: {e}")
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, DATABASE_NAME)
 
-    # Clean up the database file for a fresh start
     if os.path.exists(db_path):
         os.remove(db_path)
         print(f"Removed existing database: {db_path}")
@@ -166,40 +155,34 @@ if __name__ == "__main__":
         setup_tables(conn)
         check_table_counts(conn)
 
-        # --- Display initial stock ---
         print("\n--- Initial Stock ---")
         print(f"Widget: {get_product_stock(conn, 'Widget')}")
         print(f"Gadget: {get_product_stock(conn, 'Gadget')}")
         print(f"Thing: {get_product_stock(conn, 'Thing')}")
 
 
-        # --- Demonstrate Successful Sale ---
         process_sale(conn, "Widget", 10)
         print("\n--- Stock & Log Count After Successful Sale ---")
         print(f"Widget: {get_product_stock(conn, 'Widget')}")
         check_table_counts(conn)
 
 
-        # --- Demonstrate Failed Sale (Insufficient Stock) ---
-        process_sale(conn, "Thing", 20) # Thing only has 10 in stock
+        process_sale(conn, "Thing", 20) 
         print("\n--- Stock & Log Count After Insufficient Stock Attempt ---")
-        print(f"Thing: {get_product_stock(conn, 'Thing')}") # Should be unchanged
-        check_table_counts(conn) # Log count should also be unchanged
+        print(f"Thing: {get_product_stock(conn, 'Thing')}") 
+        check_table_counts(conn) 
 
 
-        # --- Demonstrate Failed Sale (Simulated Logging Error) ---
-        # Sell a smaller quantity that *is* in stock, but cause a log error
         process_sale(conn, "Gadget", 5, cause_log_error=True)
         print("\n--- Stock & Log Count After Simulated Logging Error Attempt ---")
-        print(f"Gadget: {get_product_stock(conn, 'Gadget')}") # Should be unchanged
-        check_table_counts(conn) # Log count should also be unchanged
+        print(f"Gadget: {get_product_stock(conn, 'Gadget')}") 
+        check_table_counts(conn) 
 
 
-        # --- Demonstrate Another Successful Sale ---
-        process_sale(conn, "Gadget", 5, cause_log_error=False) # This time it should succeed
+        process_sale(conn, "Gadget", 5, cause_log_error=False) 
         print("\n--- Stock & Log Count After Second Successful Sale ---")
-        print(f"Gadget: {get_product_stock(conn, 'Gadget')}") # Should be updated
-        check_table_counts(conn) # Log count should increase
+        print(f"Gadget: {get_product_stock(conn, 'Gadget')}") 
+        check_table_counts(conn) 
 
 
         conn.close()

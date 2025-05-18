@@ -1,8 +1,6 @@
-# 02_multi_table_transaction/multi_table_transaction.py
 import sqlite3
 import os
 
-# Define a database file name for this specific demo
 DATABASE_NAME = "multi_table_transaction_demo.db"
 
 def create_connection(db_file):
@@ -10,9 +8,7 @@ def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        # Enable foreign key constraint enforcement
         conn.execute("PRAGMA foreign_keys = ON;")
-        # print(f"Connected to database: {db_file}")
         return conn
     except sqlite3.Error as e:
         print(f"Error connecting to database: {e}")
@@ -57,7 +53,7 @@ def add_order_with_details(conn, customer_id, order_date, items, cause_error=Fal
     """
     print(f"\n--- Attempting to Add Order for Customer {customer_id} ---")
     try:
-        with conn: # Start transaction
+        with conn: 
             print("  Transaction started for adding order...")
             cursor = conn.cursor()
 
@@ -71,11 +67,8 @@ def add_order_with_details(conn, customer_id, order_date, items, cause_error=Fal
             insert_detail_sql = "INSERT INTO order_details (order_id, product_name, quantity, price_per_item) VALUES (?, ?, ?, ?);"
             total_amount = 0.0
             for i, (product_name, quantity, price_per_item) in enumerate(items):
-                # Simulate an error condition after adding a few items
-                if cause_error and i == 1: # Introduce error after the 2nd item
+                if cause_error and i == 1: 
                     print(f"  Simulating an error after item {i+1}: {product_name}")
-                    # A simple way to cause a DB error, e.g., trying to insert non-integer where int needed
-                    # Or raising a Python exception
                     raise ValueError("Simulated processing error!")
 
                 print(f"  Adding detail for product: {product_name}")
@@ -88,12 +81,11 @@ def add_order_with_details(conn, customer_id, order_date, items, cause_error=Fal
             print(f"  Updated order {order_id} total amount: {total_amount}")
 
             print("Transaction block finished.")
-            # If no exception, conn.commit() happens automatically
 
-    except (sqlite3.Error, ValueError) as e: # Catch DB errors and the simulated ValueError
+    except (sqlite3.Error, ValueError) as e: 
         print(f"  Caught an error during transaction: {e}")
         print("  Transaction automatically rolled back by the 'with conn:' context manager.")
-        order_id = None # Indicate order creation failed
+        order_id = None 
 
     except Exception as e:
          print(f"  Caught an unexpected error during transaction: {e}")
@@ -116,12 +108,10 @@ def check_table_counts(conn):
         print(f"Error checking counts: {e}")
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, DATABASE_NAME)
 
-    # Clean up the database file for a fresh start each time
     if os.path.exists(db_path):
         os.remove(db_path)
         print(f"Removed existing database: {db_path}")
@@ -132,19 +122,17 @@ if __name__ == "__main__":
         setup_tables(conn)
         check_table_counts(conn)
 
-        # --- Demonstrate Transaction with Rollback ---
         items_for_failed_order = [
             ("Product 1A", 1, 10.00),
-            ("Product 1B", 2, 5.00), # Error introduced after this item
+            ("Product 1B", 2, 5.00), 
             ("Product 1C", 3, 20.00),
         ]
         failed_order_id = add_order_with_details(conn, 101, "2023-10-27", items_for_failed_order, cause_error=True)
 
         if failed_order_id is None:
             print("\nOrder creation failed as expected due to simulated error.")
-        check_table_counts(conn) # Check counts after rollback - should be 0, 0
+        check_table_counts(conn) 
 
-        # --- Demonstrate Successful Transaction ---
         items_for_successful_order = [
             ("Product 2A", 5, 8.00),
             ("Product 2B", 1, 15.00),
@@ -154,14 +142,8 @@ if __name__ == "__main__":
 
         if successful_order_id is not None:
             print(f"\nOrder created successfully with ID: {successful_order_id}")
-            # Optional: Verify data in tables via SELECT
-            # cursor = conn.cursor()
-            # cursor.execute("SELECT * FROM orders WHERE order_id = ?", (successful_order_id,))
-            # print("Orders table:", cursor.fetchone())
-            # cursor.execute("SELECT * FROM order_details WHERE order_id = ?", (successful_order_id,))
-            # print("Order Details:", cursor.fetchall())
 
-        check_table_counts(conn) # Check counts after successful commit - should be 1, 3
+        check_table_counts(conn)
 
 
         conn.close()

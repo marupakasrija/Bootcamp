@@ -1,8 +1,6 @@
-# 02_basic_crud/basic_crud.py
 import sqlite3
 import os
 
-# Define the database file name
 DATABASE_NAME = "store.db"
 
 def create_connection(db_file):
@@ -31,7 +29,7 @@ def create_table(conn):
         cursor = conn.cursor()
         cursor.execute(create_products_table_sql)
         print("Products table checked/created successfully.")
-        conn.commit() # Commit the table creation
+        conn.commit() 
     except sqlite3.Error as e:
         print(f"Error creating table: {e}")
         conn.rollback()
@@ -43,7 +41,7 @@ def insert_product(conn, name, price):
     """
     try:
         cursor = conn.cursor()
-        cursor.execute(sql, (name, price)) # Use parameterized query to prevent SQL injection
+        cursor.execute(sql, (name, price)) 
         conn.commit()
         product_id = cursor.lastrowid
         print(f"Inserted product: {name} with ID {product_id}")
@@ -101,7 +99,7 @@ def delete_product(conn, product_id):
     """
     try:
         cursor = conn.cursor()
-        cursor.execute(sql, (product_id,)) # Tuple with comma for single item
+        cursor.execute(sql, (product_id,)) 
         conn.commit()
         if cursor.rowcount > 0:
             print(f"Deleted product with ID {product_id}")
@@ -115,24 +113,14 @@ def delete_product(conn, product_id):
         return False
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
-    # Ensure the script runs from its directory so the db file is created there
-    # Get the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, DATABASE_NAME)
-
-    # You might want to clean the db file for a fresh start each time during testing
-    # if os.path.exists(db_path):
-    #     os.remove(db_path)
-    #     print(f"Removed existing database: {db_path}")
 
     conn = create_connection(db_path)
 
     if conn:
         create_table(conn)
-
-        # Basic CRUD Operations Demonstration
 
         # Insert
         insert_product(conn, "Laptop", 1200.50)
@@ -145,15 +133,12 @@ if __name__ == "__main__":
         # Update
         if product3_id is not None:
              update_product_price(conn, product3_id, 22.50)
-             select_all_products(conn) # Read again to see the update
+             select_all_products(conn) 
 
         # Delete
-        # Let's delete the Keyboard (assuming it was the second inserted)
-        # A better way is to select by name or use the ID returned by insert
-        # For demonstration, let's just delete the one we know the ID of (the Mouse, product3_id)
         if product3_id is not None:
             delete_product(conn, product3_id)
-            select_all_products(conn) # Read again to see the deletion
+            select_all_products(conn) 
 
         # Close the connection
         conn.close()

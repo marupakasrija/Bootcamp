@@ -1,8 +1,6 @@
-# 06_aggregation_queries/aggregation_queries.py
 import sqlite3
 import os
 
-# Define the database file name
 DATABASE_NAME = "store.db"
 
 def create_connection(db_file):
@@ -10,7 +8,6 @@ def create_connection(db_file):
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        # print(f"Connected to database: {db_file}")
         return conn
     except sqlite3.Error as e:
         print(f"Error connecting to database: {e}")
@@ -43,11 +40,8 @@ def add_product(conn, name, price):
         cursor.execute(sql, (name, price))
         conn.commit()
         if cursor.rowcount > 0:
-            # print(f"Added product: {name}")
             return cursor.lastrowid
-        # else:
-            # print(f"Product '{name}' already exists, skipped insertion.")
-        return None # Return None if ignored
+        return None 
     except sqlite3.Error as e:
         print(f"Error adding product '{name}': {e}")
         conn.rollback()
@@ -61,7 +55,6 @@ def calculate_total_value(conn):
         cursor = conn.cursor()
         cursor.execute(sql)
         total_value = cursor.fetchone()[0]
-        # SUM returns None if the table is empty, handle this
         return total_value if total_value is not None else 0
     except sqlite3.Error as e:
         print(f"Error calculating total value: {e}")
@@ -86,20 +79,15 @@ def calculate_average_price(conn):
         cursor = conn.cursor()
         cursor.execute(sql)
         average_price = cursor.fetchone()[0]
-         # AVG returns None if the table is empty
         return average_price if average_price is not None else 0.0
     except sqlite3.Error as e:
         print(f"Error calculating average price: {e}")
         return None
 
-# --- Main Execution ---
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, DATABASE_NAME)
 
-    # Clean up the database file for a fresh start for THIS script's demo
-    # Note: If you want to run this after 02 or 03 and use their data, comment this out.
-    # Ensure the products table structure is compatible if using data from other scripts.
     if os.path.exists(db_path):
          os.remove(db_path)
          print(f"Removed existing database: {db_path}")
@@ -110,16 +98,14 @@ if __name__ == "__main__":
     if conn:
         setup_products_table(conn)
 
-        # Add some sample data for aggregation
         print("--- Adding Sample Products for Aggregation ---")
         add_product(conn, "Widget A", 10.50)
         add_product(conn, "Gadget B", 22.00)
         add_product(conn, "Thing C", 5.75)
-        add_product(conn, "Widget D", 10.50) # Same price as A
-        add_product(conn, "Gadget E", 22.00) # Same price as B
+        add_product(conn, "Widget D", 10.50) 
+        add_product(conn, "Gadget E", 22.00) 
         add_product(conn, "Item F", 1.99)
 
-        # Run aggregation queries
         print("\n--- Aggregation Results ---")
         total = calculate_total_value(conn)
         count = count_products(conn)
@@ -129,8 +115,6 @@ if __name__ == "__main__":
         print(f"Total number of products: {count}" if count is not None else "Could not count products.")
         print(f"Average product price: {average:.2f}" if average is not None else "Could not calculate average price.")
 
-
-        # Close the connection
         conn.close()
         print(f"\nDatabase connection closed for {DATABASE_NAME}.")
     else:
