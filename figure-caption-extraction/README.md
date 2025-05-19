@@ -1,7 +1,7 @@
 # Figure Caption Extraction System
 
-## Overview
-This project is a web-based system that extracts and analyzes figure captions from scientific papers, specifically focusing on PubMed Central (PMC) articles. It uses Streamlit for the frontend interface and provides capabilities for extracting, storing, and analyzing figure captions along with their associated metadata.
+## Purpose
+A production-ready system that extracts, stores, and provides access to scientific publication data, focusing on figure captions and related metadata from PubMed Central (PMC) articles. The system leverages BioC-PMC and PubTator3 APIs for data extraction and entity recognition.
 
 ## Demo
 1. Docker deployment
@@ -10,12 +10,20 @@ This project is a web-based system that extracts and analyzes figure captions fr
 [![loomvideo]](https://www.loom.com/share/9a79c6a50a9c41949baaedcf99e352e2?sid=d9e89e48-4d59-4d2b-87e2-19fff445c45b)
 
 ## Features
-- Extract figures and captions from PMC articles
-- Entity recognition in figure captions
-- Local database storage for extracted data
-- Web interface for data visualization
+- Extract paper metadata (title, abstract)
+- Extract and process figure captions
+- Identify figure URLs
+- Entity recognition in captions (genes, etc.)
 - Batch processing capabilities
+- API and CLI interfaces
+- Configurable storage and authentication
 
+## Tech Stack
+- Python 3.11
+- Streamlit for web interface
+- SQLite for data storage
+- Docker for containerization
+- RESTful API with authentication
 ## Prerequisites
 - Python 3.11
 - Docker and Docker Compose
@@ -28,7 +36,11 @@ This project is a web-based system that extracts and analyzes figure captions fr
 git clone [your-repo-url]
 cd figure-caption-extraction
 ```
-2. Build and run with Docker:
+2.Configure environment variables:
+```bash
+cp template.env .env
+```
+3. Build and run with Docker:
 ```bash
 docker-compose up -d --build
 ```
@@ -42,3 +54,8 @@ docker-compose up -d --build
 - API_PORT : Port for the web interface (default: 8001)
 - DB_PATH : Path to SQLite database
 - PUBTATOR_API_URL : URL for PubTator API
+
+## Testing
+```bash
+python -m pytest tests/
+```
