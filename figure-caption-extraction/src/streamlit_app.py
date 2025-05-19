@@ -1,10 +1,10 @@
 import streamlit as st
 import asyncio
-from src.services.data_access import DataAccessService
-from src.core.init_services import initialize_services
-from src.core.service_registry import ServiceRegistry
-from src.services.entity_recognition import EntityRecognitionService
-from src.core.config import settings
+from services.data_access import DataAccessService
+from core.init_services import initialize_services
+from core.service_registry import ServiceRegistry
+from services.entity_recognition import EntityRecognitionService
+from core.config import settings
 
 # Initialize all services
 initialize_services()

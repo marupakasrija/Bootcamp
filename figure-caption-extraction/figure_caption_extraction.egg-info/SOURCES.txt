@@ -4,6 +4,7 @@ setup.py
 figure_caption_extraction.egg-info/PKG-INFO
 figure_caption_extraction.egg-info/SOURCES.txt
 figure_caption_extraction.egg-info/dependency_links.txt
+figure_caption_extraction.egg-info/requires.txt
 figure_caption_extraction.egg-info/top_level.txt
 src/__init__.py
 src/streamlit_app.py

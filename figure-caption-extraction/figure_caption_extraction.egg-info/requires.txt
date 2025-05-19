@@ -1,0 +1,12 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+typer==0.9.0
+duckdb-engine==0.9.2
+httpx==0.25.2
+pydantic>=2.7.4
+pydantic-settings>=2.4.0
+python-jose==3.3.0
+python-dotenv==1.0.0
+streamlit==1.28.2
+protobuf<5,>=3.20
+packaging<24,>=16.8
