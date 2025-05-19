@@ -1,11 +1,12 @@
 
+version: '3.8'
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "${API_PORT}:8001"
+      - "8001:8001"
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
@@ -13,4 +14,5 @@ services:
       - DB_PATH=/app/data/figures.db
       - WATCH_FOLDER=/app/data/watch
       - LOG_FILE=/app/logs/ingestion.log
+      - PYTHONPATH=/app
     restart: unless-stopped

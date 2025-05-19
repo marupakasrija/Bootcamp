@@ -1,24 +1,41 @@
 # Figure Caption Extraction System
 
-A system for extracting and analyzing figure captions from scientific papers, with support for entity recognition and caching.
+## Overview
+This project is a web-based system that extracts and analyzes figure captions from scientific papers, specifically focusing on PubMed Central (PMC) articles. It uses Streamlit for the frontend interface and provides capabilities for extracting, storing, and analyzing figure captions along with their associated metadata.
+
+## Demo
+[![asciicast](https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12.svg)](https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12)
 
 ## Features
+- Extract figures and captions from PMC articles
+- Entity recognition in figure captions
+- Local database storage for extracted data
+- Web interface for data visualization
+- Batch processing capabilities
 
-- Extract figure captions from PubMed Central papers
-- Identify key entities (genes, etc.) in captions
-- Cache results in local DuckDB database
-- API and CLI interfaces
-- Streamlit web interface
-- Docker deployment support
+## Prerequisites
+- Python 3.11
+- Docker and Docker Compose
+- Internet connection for accessing PMC articles
 
-## Quick Start
+## Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone [your-repo-url]
 cd figure-caption-extraction
 ```
+2. Build and run with Docker:
+```bash
+docker-compose up -d --build
+```
 
+## Usage
+1. Access the web interface at http://localhost:8501
+2. Enter a PMC ID or upload a file containing multiple PMC IDs
+3. View the extracted figures and captions
 
-https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12
-asciinema recording
+## Environment Variables
+- API_PORT : Port for the web interface (default: 8001)
+- DB_PATH : Path to SQLite database
+- PUBTATOR_API_URL : URL for PubTator API

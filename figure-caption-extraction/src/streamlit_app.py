@@ -1,11 +1,5 @@
 import streamlit as st
 import asyncio
-import os
-import sys
-
-# Add the project root directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from src.services.data_access import DataAccessService
 from src.core.init_services import initialize_services
 from src.core.service_registry import ServiceRegistry

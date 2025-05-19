@@ -1,12 +1,6 @@
 import pandas as pd
 from typing import List, Dict, Optional
-import os
-import sys
-
-# Add the project root directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-from src.core.database import db
+from ..core.database import db
 
 class DataAccessService:
     @staticmethod
