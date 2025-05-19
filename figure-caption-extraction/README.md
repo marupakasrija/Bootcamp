@@ -20,3 +20,5 @@ cd figure-caption-extraction
 ```
 
 
+https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12
+asciinema recording
