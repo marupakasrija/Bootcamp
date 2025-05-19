@@ -33,7 +33,7 @@ A production-ready system that extracts, stores, and provides access to scientif
 
 1. Clone the repository:
 ```bash
-git clone [your-repo-url]
+git clone https://github.com/marupakasrija/Bootcamp.git
 cd figure-caption-extraction
 ```
 2.Configure environment variables:
