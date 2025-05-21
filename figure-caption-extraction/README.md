@@ -1,61 +1,91 @@
 # Figure Caption Extraction System
 
-## Purpose
 A production-ready system that extracts, stores, and provides access to scientific publication data, focusing on figure captions and related metadata from PubMed Central (PMC) articles. The system leverages BioC-PMC and PubTator3 APIs for data extraction and entity recognition.
 
-## Demo
-1. Docker deployment
-[![asciicast](https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12.svg)](https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12)
-2. Working of application
-[![loomvideo]](https://www.loom.com/share/9a79c6a50a9c41949baaedcf99e352e2?sid=d9e89e48-4d59-4d2b-87e2-19fff445c45b)
-
 ## Features
-- Extract paper metadata (title, abstract)
-- Extract and process figure captions
-- Identify figure URLs
-- Entity recognition in captions (genes, etc.)
-- Batch processing capabilities
-- API and CLI interfaces
-- Configurable storage and authentication
 
-## Tech Stack
-- Python 3.11
-- Streamlit for web interface
-- SQLite for data storage
-- Docker for containerization
-- RESTful API with authentication
-## Prerequisites
-- Python 3.11
-- Docker and Docker Compose
-- Internet connection for accessing PMC articles
+- Extract figures and captions from PubMed/PMC articles
+- Entity recognition in figure captions
+- Support for both PMC IDs and PubMed IDs
+- Multiple interfaces (API, CLI, and Streamlit UI)
+- Local database storage with CSV export
+- Docker support
 
 ## Installation
 
+### Prerequisites
+- Python 3.8+
+- pip
+- SQLite3
+
+### Setup
 1. Clone the repository:
 ```bash
 git clone https://github.com/marupakasrija/Bootcamp.git
 cd figure-caption-extraction
 ```
-2.Configure environment variables:
+2. Create and activate virtual environment:
 ```bash
-cp template.env .env
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# Unix/MacOS
+source venv/bin/activate
 ```
-3. Build and run with Docker:
+3. Install dependencies:
 ```bash
-docker-compose up -d --build
+pip install -r requirements.txt
 ```
 
 ## Usage
-1. Access the web interface at http://localhost:8501
-2. Enter a PMC ID or upload a file containing multiple PMC IDs
-3. View the extracted figures and captions
 
-## Environment Variables
-- API_PORT : Port for the web interface (default: 8001)
-- DB_PATH : Path to SQLite database
-- PUBTATOR_API_URL : URL for PubTator API
-
-## Testing
+### Streamlit UI
+Run the Streamlit interface:
 ```bash
-python -m pytest tests/
+streamlit run src/streamlit_app.py
 ```
+Features:
+- Process individual papers or batch process from file
+- View extracted figures and captions
+- Export data to CSV
+
+### CLI
+Process papers using command line:
+```bash
+# Process single PMC paper
+python -m src.cli.main process-papers PMC1234567
+# Process multiple papers from file
+python -m src.cli.main process-file pmcids.txt
+```
+
+### API
+Start the FastAPI server:
+```bash
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+```
+API endpoints:
+- POST /papers/process : Process multiple papers
+- GET /papers/{paper_id} : Get processed paper data
+
+## Docker Support
+
+Build and run with Docker:
+```bash
+docker-compose up --build
+```
+
+## Data Structure
+
+The system stores data in SQLite with the following structure:
+- Papers: Basic paper information
+- Figures: Figure data and captions
+- Entities: Extracted entities from captions
+Data can be exported to CSV format using the UI or CLI.
+
+
+## Demo
+
+1. Docker deployment
+[![asciicast](https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12.svg)](https://asciinema.org/connect/1af33fce-f016-46dd-ae64-401112477c12)
+2. Working of application
+[![loomvideo]](https://www.loom.com/share/9a79c6a50a9c41949baaedcf99e352e2?sid=d9e89e48-4d59-4d2b-87e2-19fff445c45b)

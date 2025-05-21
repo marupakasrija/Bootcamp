@@ -14,12 +14,11 @@ class EntityRecognitionService:
             return []
             
         try:
-            response = await self.client.get(
-                f"{self.base_url}/entity/autocomplete/",
-                params={
-                    "query": text,
-                    "concepts": ["gene", "disease", "chemical", "species", "mutation"],
-                    "limit": 20
+            response = await self.client.post(
+                f"{self.base_url}/annotations/annotate",
+                json={
+                    "text": text,
+                    "concepts": ["gene", "disease", "chemical", "species", "mutation"]
                 }
             )
             response.raise_for_status()
